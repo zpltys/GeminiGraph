@@ -14,4 +14,5 @@ int main()
         a[i] = i;
     }
     fwrite(a, sizeof(a), 10, fp);
+    fclose(fp);
 }
