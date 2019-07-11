@@ -111,9 +111,9 @@ void compute(Graph<Empty> * graph) {
 }
 
 int main(int argc, char ** argv) {
-  printf("start!\n");
-  int begintime,endtime;
-  begintime=clock();
+  printf("start cc!\n");
+  clock_t  begintime, endtime;
+  begintime = clock();
 
   MPI_Instance mpi(&argc, &argv);
 
@@ -128,8 +128,8 @@ int main(int argc, char ** argv) {
 
   compute(graph);
 
-  endtime = clock();	//计时结束
-  printf("Running Time：%f s\n", ((double)(endtime-begintime)) / CLOCKS_PER_SEC );
+  endtime = clock();
+  printf("Running Time：%f s\n", (double)(endtime-begintime) / CLOCKS_PER_SEC );
   delete graph;
   return 0;
 }
