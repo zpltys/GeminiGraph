@@ -17,6 +17,8 @@ Copyright (c) 2014-2015 Xiaowei Zhu, Tsinghua University
 #include <stdio.h>
 #include <stdlib.h>
 
+#include<time.h>
+
 #include "core/graph.hpp"
 
 void compute(Graph<Empty> * graph) {
@@ -109,6 +111,10 @@ void compute(Graph<Empty> * graph) {
 }
 
 int main(int argc, char ** argv) {
+  printf("start!\n");
+  int begintime,endtime;
+  begintime=clock();
+
   MPI_Instance mpi(&argc, &argv);
 
   if (argc<3) {
@@ -121,10 +127,9 @@ int main(int argc, char ** argv) {
   graph->load_undirected_from_directed(argv[1], std::atoi(argv[2]));
 
   compute(graph);
-  for (int run=0;run<5;run++) {
-    compute(graph);
-  }
 
+  endtime = clock();	//计时结束
+  printf("Running Time：%dms\n", endtime-begintime);
   delete graph;
   return 0;
 }
