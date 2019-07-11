@@ -348,7 +348,6 @@ public:
 
   // load a directed graph and make it undirected
   void load_undirected_from_directed(std::string path, VertexId vertices) {
-    printf("start read\n");
     double prep_time = 0;
     prep_time -= MPI_Wtime();
 
@@ -359,7 +358,6 @@ public:
     this->vertices = vertices;
     long total_bytes = file_size(path.c_str());
     this->edges = total_bytes / edge_unit_size;
-    printf("total_bytes:%ld, edge_unit_size:%d \n", total_bytes, edge_unit_size);
     #ifdef PRINT_DEBUG_MESSAGES
     if (partition_id==0) {
       printf("|V| = %u, |E| = %lu\n", vertices, edges);
@@ -398,7 +396,6 @@ public:
         VertexId dst = read_edge_buffer[e_i].dst;
         __sync_fetch_and_add(&out_degree[src], 1);
         __sync_fetch_and_add(&out_degree[dst], 1);
-        printf("partition_id:%d, src:%u, dst:%u\n", partition_id, src, dst);
       }
     }
     MPI_Allreduce(MPI_IN_PLACE, out_degree, vertices, vid_t, MPI_SUM, MPI_COMM_WORLD);
