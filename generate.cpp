@@ -9,11 +9,11 @@ int main()
 {
     FILE* fp = fopen("test", "wb+");
 
-    unsigned int a[100];
-    for (unsigned int i = 0; i < 100; i++) {
+    unsigned int a[10];
+    for (unsigned int i = 0; i < 10; i++) {
         a[i] = i;
     }
-    fwrite(a, sizeof(a), 10, fp);
+    fwrite(a, sizeof(a[0]), 10, fp);
     fclose(fp);
 
     fp = fopen("test", "rb");
