@@ -348,6 +348,7 @@ public:
 
   // load a directed graph and make it undirected
   void load_undirected_from_directed(std::string path, VertexId vertices) {
+    printf("start read");
     double prep_time = 0;
     prep_time -= MPI_Wtime();
 
