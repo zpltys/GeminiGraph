@@ -129,7 +129,7 @@ int main(int argc, char ** argv) {
   compute(graph);
 
   endtime = clock();	//计时结束
-  printf("Running Time：%dms\n", endtime-begintime);
+  printf("Running Time：%f s\n", ((double)(endtime-begintime)) / CLK_TCK );
   delete graph;
   return 0;
 }
