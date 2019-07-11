@@ -111,11 +111,10 @@ void compute(Graph<Empty> * graph) {
 }
 
 int main(int argc, char ** argv) {
+  MPI_Instance mpi(&argc, &argv);
   printf("start cc!\n");
   clock_t  begintime, endtime;
   begintime = clock();
-
-  MPI_Instance mpi(&argc, &argv);
 
   if (argc<3) {
     printf("cc [file] [vertices]\n");
