@@ -15,4 +15,9 @@ int main()
     }
     fwrite(a, sizeof(a), 10, fp);
     fclose(fp);
+
+    fp = fopen("test", "rb");
+    fseek(fp,0,SEEK_END);
+    int size = ftell(fp);
+    printf("file size: %d\n", size);
 }
