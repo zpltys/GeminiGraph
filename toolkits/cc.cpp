@@ -113,8 +113,7 @@ void compute(Graph<Empty> * graph) {
 int main(int argc, char ** argv) {
   MPI_Instance mpi(&argc, &argv);
   printf("start cc!\n");
-  clock_t  begintime, endtime;
-  begintime = clock();
+  clock_t begintime, endtime;
 
   if (argc<3) {
     printf("cc [file] [vertices]\n");
@@ -125,6 +124,7 @@ int main(int argc, char ** argv) {
   graph = new Graph<Empty>();
   graph->load_undirected_from_directed(argv[1], std::atoi(argv[2]));
 
+  begintime = clock();
   compute(graph);
 
   endtime = clock();
