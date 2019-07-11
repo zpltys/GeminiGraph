@@ -9,8 +9,8 @@ int main()
 {
     FILE* fp = fopen("test", "wb+");
 
-    int a[10];
-    for (int i = 0; i < 10; i++) {
+    uint32_t a[10];
+    for (uint32_t i = 0; i < 10; i++) {
         a[i] = i;
     }
     fwrite(a, sizeof(a), 10, fp);
