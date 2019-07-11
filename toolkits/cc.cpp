@@ -113,7 +113,7 @@ void compute(Graph<Empty> * graph) {
 int main(int argc, char ** argv) {
   MPI_Instance mpi(&argc, &argv);
   printf("start cc!\n");
-  clock_t begintime, endtime;
+  clock_t begin, end;
 
   if (argc<3) {
     printf("cc [file] [vertices]\n");
@@ -124,11 +124,11 @@ int main(int argc, char ** argv) {
   graph = new Graph<Empty>();
   graph->load_undirected_from_directed(argv[1], std::atoi(argv[2]));
 
-  begintime = clock();
+  begin = clock();
   compute(graph);
 
-  endtime = clock();
-  printf("Running Time：%f s\n", (double)(endtime-begintime) / CLOCKS_PER_SEC );
+  end = clock();
+  printf("Running Time：%f s\n", (double)(end - begin) / CLOCKS_PER_SEC );
   delete graph;
   return 0;
 }
