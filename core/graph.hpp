@@ -25,7 +25,7 @@ Copyright (c) 2015-2016 Xiaowei Zhu, Tsinghua University
 #include <malloc.h>
 #include <sys/mman.h>
 #include <numa.h>
-//#include <omp.h>
+#include <omp.h>
 
 #include <string>
 #include <vector>
@@ -165,6 +165,8 @@ public:
 
     assert( numa_available() != -1 );
     assert( sizeof(unsigned long) == 8 ); // assume unsigned long is 64-bit
+
+    printf("threads: %d, sockets: %d\n", threads, sockets);
 
     char nodestring[sockets*2+1];
     nodestring[0] = '0';
