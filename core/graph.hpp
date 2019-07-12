@@ -41,7 +41,7 @@ Copyright (c) 2015-2016 Xiaowei Zhu, Tsinghua University
 #include "core/time.hpp"
 #include "core/type.hpp"
 
-const int threadNum = 1;
+//const int threadNum = 1;
 
 enum ThreadStatus {
   WORKING,
@@ -143,8 +143,10 @@ public:
   MessageBuffer *** recv_buffer; // MessageBuffer* [partitions] [sockets]; numa-aware
 
   Graph() {
-    threads = numa_num_configured_cpus();
-    sockets = numa_num_configured_nodes();
+    //threads = numa_num_configured_cpus();
+    //sockets = numa_num_configured_nodes();
+    threads = 1;
+    sockets = 1;
     threads_per_socket = threads / sockets;
 
     init();
@@ -187,7 +189,7 @@ public:
       local_send_buffer[t_i] = (MessageBuffer*)numa_alloc_onnode( sizeof(MessageBuffer), get_socket_id(t_i));
       local_send_buffer[t_i]->init(get_socket_id(t_i));
     }
-    //#pragma omp parallel for          zs
+    #pragma omp parallel for
     for (int t_i=0;t_i<threads;t_i++) {
       int s_i = get_socket_id(t_i);
       assert(numa_run_on_node(s_i)==0);
@@ -223,7 +225,7 @@ public:
   // fill a vertex array with a specific value
   template<typename T>
   void fill_vertex_array(T * array, T value) {
-    //#pragma omp parallel for            zs
+    #pragma omp parallel for
     for (VertexId v_i=partition_offset[partition_id];v_i<partition_offset[partition_id+1];v_i++) {
       array[v_i] = value;
     }
@@ -658,7 +660,7 @@ public:
           assert(recv_bytes % edge_unit_size == 0);
           int recv_edges = recv_bytes / edge_unit_size;
           MPI_Recv(recv_buffer, edge_unit_size * recv_edges, MPI_CHAR, i, ShuffleGraph, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-          //#pragma omp parallel for   zs
+          #pragma omp parallel for
           for (EdgeId e_i=0;e_i<recv_edges;e_i++) {
             VertexId src = recv_buffer[e_i].src;
             VertexId dst = recv_buffer[e_i].dst;
@@ -816,7 +818,7 @@ public:
       assert(curr_read_bytes>=0);
       read_bytes += curr_read_bytes;
       EdgeId curr_read_edges = curr_read_bytes / edge_unit_size;
-      //#pragma omp parallel for   zs
+      #pragma omp parallel for
       for (EdgeId e_i=0;e_i<curr_read_edges;e_i++) {
         VertexId src = read_edge_buffer[e_i].src;
         VertexId dst = read_edge_buffer[e_i].dst;
@@ -1065,7 +1067,7 @@ public:
           assert(recv_bytes % edge_unit_size == 0);
           int recv_edges = recv_bytes / edge_unit_size;
           MPI_Recv(recv_buffer, edge_unit_size * recv_edges, MPI_CHAR, i, ShuffleGraph, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-          //#pragma omp parallel for   zs
+          #pragma omp parallel for
           for (EdgeId e_i=0;e_i<recv_edges;e_i++) {
             VertexId src = recv_buffer[e_i].src;
             VertexId dst = recv_buffer[e_i].dst;
@@ -1262,7 +1264,7 @@ public:
           assert(recv_bytes % edge_unit_size == 0);
           int recv_edges = recv_bytes / edge_unit_size;
           MPI_Recv(recv_buffer, edge_unit_size * recv_edges, MPI_CHAR, i, ShuffleGraph, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-          //#pragma omp parallel for     zs
+          #pragma omp parallel for
           for (EdgeId e_i=0;e_i<recv_edges;e_i++) {
             VertexId src = recv_buffer[e_i].src;
             VertexId dst = recv_buffer[e_i].dst;
@@ -1426,7 +1428,7 @@ public:
       }
       thread_state[t_i]->status = WORKING;
     }
-    //#pragma omp parallel reduction(+:reducer)          zs
+    #pragma omp parallel reduction(+:reducer)
     {
       R local_reducer = 0;
       int thread_id = omp_get_thread_num();
@@ -1542,7 +1544,7 @@ public:
       std::mutex recv_queue_mutex;
 
       current_send_part_id = partition_id;
-      //#pragma omp parallel for        zs
+      #pragma omp parallel for
       for (VertexId begin_v_i=partition_offset[partition_id];begin_v_i<partition_offset[partition_id+1];begin_v_i+=basic_chunk) {
         VertexId v_i = begin_v_i;
         unsigned long word = active->data[WORD_OFFSET(v_i)];
@@ -1554,7 +1556,7 @@ public:
           word = word >> 1;
         }
       }
-      //#pragma omp parallel for         zs
+      #pragma omp parallel for
       for (int t_i=0;t_i<threads;t_i++) {
         flush_local_send_buffer<M>(t_i);
       }
@@ -1615,7 +1617,7 @@ public:
             }
             thread_state[t_i]->status = WORKING;
           }
-          //#pragma omp parallel reduction(+:reducer)       zs
+          #pragma omp parallel reduction(+:reducer)
           {
             R local_reducer = 0;
             int thread_id = omp_get_thread_num();
@@ -1756,7 +1758,7 @@ public:
         for (int t_i=0;t_i<threads;t_i++) {
           *thread_state[t_i] = tuned_chunks_dense[i][t_i];
         }
-        //#pragma omp parallel         zs
+        #pragma omp parallel
         {
           int thread_id = omp_get_thread_num();
           int s_i = get_socket_id(thread_id);
@@ -1791,7 +1793,7 @@ public:
             }
           }
         }
-        //#pragma omp parallel for          zs
+        #pragma omp parallel for
         for (int t_i=0;t_i<threads;t_i++) {
           flush_local_send_buffer<M>(t_i);
         }
@@ -1828,7 +1830,7 @@ public:
           }
           thread_state[t_i]->status = WORKING;
         }
-        //#pragma omp parallel reduction(+:reducer)           zs
+        #pragma omp parallel reduction(+:reducer)
         {
           R local_reducer = 0;
           int thread_id = omp_get_thread_num();
